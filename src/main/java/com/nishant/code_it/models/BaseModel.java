@@ -11,4 +11,10 @@ public class BaseModel {
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE)
 	private Long id;
+	
+	
+	public Long getId()
+	{
+		return this.id;
+	}
 }

@@ -11,10 +11,11 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class QuestionDto {
+public class QuestionResponseDto {
   
+	private Long qid;
 	private String title;
 	private String description;
+	private String solutionTemplate;
 	private List<ExampleDto> examples;
-	private List<TestCaseDto> testCases;
 }

@@ -11,6 +11,6 @@ import lombok.Setter;
 @AllArgsConstructor
 public class TestCaseDto {
  
-	private String input;
+	private String questionTemplate;
 	private String output;
 }

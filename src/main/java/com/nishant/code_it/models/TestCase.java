@@ -16,6 +16,6 @@ public class TestCase extends BaseModel{
 	
 	@ManyToOne
     private Question question;
-	private String input;
 	private String output;
+	private String questionTemplate;
 }

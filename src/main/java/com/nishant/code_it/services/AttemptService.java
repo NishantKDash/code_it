@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.nishant.code_it.enums.AttemptStatus;
+import com.nishant.code_it.enums.Language;
 import com.nishant.code_it.exceptions.UserDoesNotExist;
 import com.nishant.code_it.models.Attempt;
 import com.nishant.code_it.models.Question;
@@ -32,6 +33,9 @@ public class AttemptService {
 	@Autowired 
 	private RabbitTemplate template;
 	
+	@Autowired
+	private LanguageService languageService;
+	
 	
 	@Value("${attemptqueue.key}")
 	private String attemptQueueKey;
@@ -41,7 +45,7 @@ public class AttemptService {
 	private String exchangeName;
 	
 	
-	public Attempt submit(Long qid , String username , String code) throws UserDoesNotExist
+	public Attempt submit(Long qid , String username , String code , String language) throws UserDoesNotExist
 	{
 		UserEntity user = userRepository.findByusername(username);
 		if(user == null)
@@ -55,10 +59,17 @@ public class AttemptService {
 		attempt.setQuestion(question);
 		attempt.setAttemptStatus(AttemptStatus.CHECKING);
 		attempt.setTimeStamp(LocalDateTime.now());
+		Language usedLang = languageService.getLanguage(language);
+		attempt.setLanguage(usedLang);
 		
-		template.convertAndSend(exchangeName , attemptQueueKey , new AttemptQueueData(username , qid ,code));
 		
-		
+		AttemptQueueData queueData = new AttemptQueueData();
+		queueData.setAttemptId(attempt.getId());
+		queueData.setCode(attempt.getCode());
+		queueData.setLanguage(usedLang);
+		queueData.setQid(qid);
+		queueData.setUsername(username);
+		template.convertAndSend(exchangeName , attemptQueueKey , queueData);
 		
 		return attemptRepository.save(attempt);
 	}

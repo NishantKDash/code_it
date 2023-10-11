@@ -1,6 +1,8 @@
 package com.nishant.code_it.rabbitmq;
 
-import com.nishant.code_it.enums.Language;
+import java.util.List;
+
+import com.nishant.code_it.enums.AttemptStatus;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -11,12 +13,11 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class AttemptQueueData {
-	
-	private String username;
+public class NotificationQueueData {
+ 
 	private Long qid;
 	private Long attemptId;
-	private String code;
-	private Language language;
-
+	private AttemptStatus attemptStatus;
+	private List<String> results;
+	private String username;
 }

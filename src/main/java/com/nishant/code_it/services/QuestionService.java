@@ -6,7 +6,7 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.nishant.code_it.dtos.QuestionDto;
+import com.nishant.code_it.dtos.QuestionAdditionDto;
 import com.nishant.code_it.models.Example;
 import com.nishant.code_it.models.Question;
 import com.nishant.code_it.models.TestCase;
@@ -19,7 +19,7 @@ public class QuestionService {
 	@Autowired
 	private QuestionRepository questionRepository;
 	
-	public Question create(QuestionDto questionDto)
+	public Question create(QuestionAdditionDto questionDto)
 	{ 
 		
 		Question question  = new Question();
@@ -31,10 +31,12 @@ public class QuestionService {
 		example.setOutput(exampledto.getOutput());
 		example.setQuestion(question);
 		return example;}).collect(Collectors.toList());
+		
+		
 		List<TestCase> testCases = questionDto.getTestCases().stream().map(testcasedto->{TestCase testCase = new TestCase();
-		testCase.setInput(testcasedto.getInput());
 		testCase.setOutput(testcasedto.getOutput());
 		testCase.setQuestion(question);
+		testCase.setQuestionTemplate(testcasedto.getQuestionTemplate());
 		return testCase;}).collect(Collectors.toList());
 		
 		question.setTestCases(testCases);

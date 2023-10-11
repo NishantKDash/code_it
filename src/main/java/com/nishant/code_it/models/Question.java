@@ -4,6 +4,7 @@ import java.util.List;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.OneToMany;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -20,8 +21,9 @@ public class Question extends BaseModel{
 	
 	private String title;
 	private String description;
-	@OneToMany(mappedBy = "question" , cascade = CascadeType.ALL)
+	private String solutionTemplate;
+	@OneToMany(mappedBy = "question" , cascade = CascadeType.ALL , fetch = FetchType.EAGER)
 	private List<Example> examples;
-	@OneToMany(mappedBy = "question" , cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "question" , cascade = CascadeType.ALL , fetch = FetchType.EAGER)
 	private List<TestCase> testCases;
 }

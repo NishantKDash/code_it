@@ -1,4 +1,4 @@
-package com.nishant.code_it.dtos;
+package com.nishant.code_it.notification;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,11 +9,8 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class AttemptDto {
-  
-	private Long qid;
-	private String username;
-	private String language;
-	private String code;
-	
+public class SocketMessage {
+   private Long qid;
+   private Long attemptId;
+   private String result;
 }

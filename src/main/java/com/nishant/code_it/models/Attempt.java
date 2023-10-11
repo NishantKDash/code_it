@@ -3,6 +3,7 @@ package com.nishant.code_it.models;
 import java.time.LocalDateTime;
 
 import com.nishant.code_it.enums.AttemptStatus;
+import com.nishant.code_it.enums.Language;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -26,6 +27,10 @@ public class Attempt extends BaseModel{
 	private Question question;
 	@Enumerated(EnumType.STRING)
 	private AttemptStatus attemptStatus;
+	
+	@Enumerated(EnumType.STRING)
+	private Language language;
+	
 	private String code;
 	private LocalDateTime timeStamp;
 }

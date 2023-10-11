@@ -24,7 +24,7 @@ public class AttemptController {
    public ResponseEntity<String> submit(@RequestBody AttemptDto dto) throws Exception
    {
 	
-	   attemptService.submit(dto.getQid(), dto.getUsername(), dto.getCode());
+	   attemptService.submit(dto.getQid(), dto.getUsername(), dto.getCode() , dto.getLanguage());
 	   return ResponseEntity.ok("The code has been submitted and is being processed");
    }
 

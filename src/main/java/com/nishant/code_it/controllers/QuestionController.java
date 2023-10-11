@@ -8,7 +8,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.nishant.code_it.dtos.QuestionDto;
+import com.nishant.code_it.dtos.QuestionAdditionDto;
+import com.nishant.code_it.dtos.QuestionResponseDto;
 import com.nishant.code_it.models.Question;
 import com.nishant.code_it.services.QuestionService;
 
@@ -20,7 +21,7 @@ public class QuestionController {
     private	QuestionService questionService;
 	@PostMapping("/create")
 	@PreAuthorize("hasAuthority('ADMIN')")
-	public ResponseEntity<String> createQuestion(@RequestBody QuestionDto questionDto)
+	public ResponseEntity<String> createQuestion(@RequestBody QuestionAdditionDto questionDto)
 	{
 		Question question = questionService.create(questionDto);
 		return ResponseEntity.ok("Question has been created");
