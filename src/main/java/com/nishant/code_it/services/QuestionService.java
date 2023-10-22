@@ -24,6 +24,7 @@ public class QuestionService {
 		
 		Question question  = new Question();
 		question.setTitle(questionDto.getTitle());
+		question.setSolutionTemplate(questionDto.getSolutionTemplate());
 		question.setDescription(questionDto.getDescription());
 		List<Example> examples = questionDto.getExamples().stream().map(exampledto->{Example example = new Example();
 		example.setExplanation(exampledto.getExplanation());
@@ -43,5 +44,20 @@ public class QuestionService {
 		question.setExamples(examples);
 		return questionRepository.save(question);
 		
+	}
+	
+	public List<Question> getAllQuestions()
+	{
+		return questionRepository.findAll();
+	}
+	
+	public void delete(Long id)
+	{
+		 questionRepository.deleteById(id);
+	}
+	
+	public Question getQuestion(Long qid)
+	{
+		return questionRepository.findById(qid).get();
 	}
 }

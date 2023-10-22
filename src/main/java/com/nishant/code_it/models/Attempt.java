@@ -23,8 +23,7 @@ public class Attempt extends BaseModel{
    
 	@ManyToOne
 	private UserEntity user;
-	@ManyToOne
-	private Question question;
+	private Long qid;
 	@Enumerated(EnumType.STRING)
 	private AttemptStatus attemptStatus;
 	

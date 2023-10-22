@@ -56,7 +56,7 @@ public class AttemptService {
 		Attempt attempt = new Attempt();
 		attempt.setUser(user);
 		attempt.setCode(code);
-		attempt.setQuestion(question);
+		attempt.setQid(qid);
 		attempt.setAttemptStatus(AttemptStatus.CHECKING);
 		attempt.setTimeStamp(LocalDateTime.now());
 		Language usedLang = languageService.getLanguage(language);

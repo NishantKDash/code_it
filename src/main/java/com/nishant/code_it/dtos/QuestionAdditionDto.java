@@ -14,6 +14,7 @@ import lombok.Setter;
 public class QuestionAdditionDto {
    private String title;
    private String description;
+   private String solutionTemplate;
    private List <ExampleDto> examples;
    private List <TestCaseDto> testCases;
 }
