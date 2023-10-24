@@ -31,11 +31,33 @@ public class JavaCodeGenerator implements CodeGenerator{
 	@Value("${filesystem.code.path}")
 	private String baseFilePath;
 	
-	@Value("${filesystem.image.path}")
-	private String baseImagePath;
+//	@Value("${filesystem.image.path}")
+//	private String baseImagePath;
 	
 	@Autowired
 	private DockerClient dockerClient;
+	
+	
+	@Override
+	public String prepareDirectory(Long attemptId, Long testCaseId) {
+		String folderPath = baseFilePath + attemptId + "_" + testCaseId;
+		Path path = Path.of(folderPath);
+		 if (!Files.exists(path)) {
+	            // If it doesn't exist, create the directory
+	            try {
+	                Files.createDirectories(path);
+	            } catch (IOException e) {
+	                System.err.println("Failed to create directory: " + e.getMessage());
+	            }
+	        }
+		return folderPath;
+	}
+	
+	@Override
+	public void deleteDirectory(String folderPath) throws IOException {
+		Files.delete(Path.of(folderPath));
+		
+	}
 
 	@Override
 	public String prepareCode(String questionTemplate, String code) {
@@ -47,8 +69,8 @@ public class JavaCodeGenerator implements CodeGenerator{
 	}
 	
 	@Override
-	public String createCodeFile(Long attemptId,Long testCaseId, String code) {
-		String filepath = baseFilePath + attemptId + "_" + testCaseId + ".java";
+	public String createCodeFile(String folderPath , String code) {
+		String filepath = folderPath + "\\Main.java";
 		Path path = Path.of(filepath);
 		try {
 			Files.write(path, code.getBytes(), StandardOpenOption.CREATE);
@@ -68,19 +90,18 @@ public class JavaCodeGenerator implements CodeGenerator{
 	}
 
 	@Override
-	public String createDockerfile(Long attemptId, Long testCaseId) {
-	    String filepath = baseImagePath + attemptId + "_" + testCaseId;
+	public String createDockerfile(String folderPath , Long attemptId, Long testCaseId) {
+	    String filepath = folderPath + "\\" + attemptId + "_" + testCaseId;
 	    Path path = Path.of(filepath);
 	    
-	    String fileName = attemptId + "_" + testCaseId + ".java";
 	    
 	    StringBuilder content = new StringBuilder();
 	      content.append("FROM openjdk:11\n")
 	             .append("WORKDIR /app\n")
 	             .append("COPY ")
-	             .append(fileName)
+	             .append("Main.java")
 	             .append(" /app\n")
-	             .append("RUN javac "+fileName+"\n");
+	             .append("RUN javac Main.java" + "\n");
 	            
 		try {
 			Files.write(path, content.toString().getBytes(), StandardOpenOption.CREATE);
@@ -95,14 +116,18 @@ public class JavaCodeGenerator implements CodeGenerator{
 	
 	
 	@Override
-	public String buildImage(String imagePath)
+	public String buildImage(String dockerfilePath , String contextPath)
 	{
+		
 	String imageid = dockerClient.buildImageCmd()
-		            .withDockerfile(new File(imagePath))
-		            .withBaseDirectory(new File(baseFilePath))  // this is for the context- if dockerfile references files in other directories like codefiles etc.
+		            .withDockerfile(new File(dockerfilePath))
+		            .withBaseDirectory(new File(contextPath))  // this is for the context- if dockerfile references files in other directories like codefiles etc.
 		            .exec(new BuildImageResultCallback())
 		            .awaitImageId();
+	
      return imageid;
+     
+     
 		
 	}
 
@@ -153,9 +178,11 @@ public class JavaCodeGenerator implements CodeGenerator{
 	                	 @Override
 	                	 public void onNext(Frame frame)
 	                	 {
-	                		 output.append(frame);
+	                		 System.out.println(frame.toString());
+	                		 output.append(frame.toString());
 	                	 }
 	                 });
+	     
 	     
 	     return output.toString();
 	}
@@ -165,6 +192,10 @@ public class JavaCodeGenerator implements CodeGenerator{
 		dockerClient.removeContainerCmd(containerId).exec();
 		
 	}
+
+
+
+	
 
 
 

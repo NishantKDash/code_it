@@ -62,15 +62,17 @@ public class AttemptService {
 		Language usedLang = languageService.getLanguage(language);
 		attempt.setLanguage(usedLang);
 		
+		Attempt savedAttempt = attemptRepository.save(attempt);
+		
 		
 		AttemptQueueData queueData = new AttemptQueueData();
-		queueData.setAttemptId(attempt.getId());
-		queueData.setCode(attempt.getCode());
+		queueData.setAttemptId(savedAttempt.getId());
+		queueData.setCode(savedAttempt.getCode());
 		queueData.setLanguage(usedLang);
 		queueData.setQid(qid);
 		queueData.setUsername(username);
 		template.convertAndSend(exchangeName , attemptQueueKey , queueData);
 		
-		return attemptRepository.save(attempt);
+		return savedAttempt;
 	}
 }

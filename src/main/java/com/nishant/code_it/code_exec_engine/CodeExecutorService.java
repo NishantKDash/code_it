@@ -49,6 +49,7 @@ public class CodeExecutorService {
 		List<TestCase> testCases = question.getTestCases();
 		List<String> codeFiles = new ArrayList<>();
 		List<String> dockerFiles = new ArrayList<>();
+		List<String> directories = new ArrayList<>();
 		List<String> images = new ArrayList<>();
 		List<String> containerIds = new ArrayList<>();
 		
@@ -56,13 +57,15 @@ public class CodeExecutorService {
 		{
 		   String questionTemplate = testCase.getQuestionTemplate();
 		   String finalCode = codeGenerator.prepareCode(questionTemplate, queueData.getCode());
-		   String codeFilePath = codeGenerator.createCodeFile(queueData.getAttemptId(), testCase.getId(), finalCode);
-		   String dockerFilePath = codeGenerator.createDockerfile(queueData.getAttemptId(), testCase.getId());
-		   String imageId = codeGenerator.buildImage(dockerFilePath);
+		   String folder = codeGenerator.prepareDirectory(queueData.getAttemptId(), testCase.getId());
+		   String codeFilePath = codeGenerator.createCodeFile(folder , finalCode);
+		   String dockerFilePath = codeGenerator.createDockerfile(folder ,queueData.getAttemptId(), testCase.getId());
+		   String imageId = codeGenerator.buildImage(dockerFilePath , folder);
 		   String containerId = codeGenerator.createContainer(imageId);
 		   
 		   codeFiles.add(codeFilePath);
 		   dockerFiles.add(dockerFilePath);
+		   directories.add(folder);
 		   images.add(imageId);
 		   containerIds.add(containerId);
 		   
@@ -76,6 +79,7 @@ public class CodeExecutorService {
 		
 		List<String> result = containerIds.stream().map(containerId ->{codeGenerator.stopContainer(containerId);
 		                                         String output = codeGenerator.getOutput(containerId);
+		                                         System.out.println(output + " " + "here I am here I am");
 		                                         codeGenerator.removeContainer(containerId);
 		                                         return output;}).collect(Collectors.toList());
 		
@@ -86,11 +90,13 @@ public class CodeExecutorService {
 				codeGenerator.deleteFile(codeFiles.get(i));
 				codeGenerator.deleteFile(dockerFiles.get(i));
 				codeGenerator.removeImage(images.get(i));
+				codeGenerator.deleteDirectory(directories.get(i));
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
+		
 		
 		
 		NotificationQueueData notificationData = new NotificationQueueData();
