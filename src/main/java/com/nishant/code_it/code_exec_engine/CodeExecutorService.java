@@ -1,5 +1,6 @@
 package com.nishant.code_it.code_exec_engine;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -78,8 +79,13 @@ public class CodeExecutorService {
 		Thread.sleep(1000);
 		
 		List<String> result = containerIds.stream().map(containerId ->{codeGenerator.stopContainer(containerId);
-		                                         String output = codeGenerator.getOutput(containerId);
-		                                         System.out.println(output + " " + "here I am here I am");
+		                                         String output = "";
+												try {
+													output = codeGenerator.getOutput(containerId);
+												} catch (IOException e) {
+													// TODO Auto-generated catch block
+													e.printStackTrace();
+												}
 		                                         codeGenerator.removeContainer(containerId);
 		                                         return output;}).collect(Collectors.toList());
 		

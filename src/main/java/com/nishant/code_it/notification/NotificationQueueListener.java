@@ -25,7 +25,7 @@ public class NotificationQueueListener {
 		message.setQid(notificationData.getQid());
 		message.setResult(notificationData.getAttemptStatus().toString());
 		
-		String destination = "/notify/" + notificationData.getUsername();
+		String destination = "/topic/" + notificationData.getUsername();
 		messagingTemplate.convertAndSend(destination, message);
 	}
 }

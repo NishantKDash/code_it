@@ -16,5 +16,5 @@ public interface CodeGenerator {
 	public void startContainer(String containerId);
 	public void stopContainer(String containerId);
 	public void removeContainer(String containerId);
-	public String getOutput(String containerId);
+	public String getOutput(String containerId) throws IOException;
 }

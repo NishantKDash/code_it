@@ -2,12 +2,11 @@ package com.nishant.code_it.code_exec_engine;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.FileStore;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
-
-import javax.lang.model.element.Modifier;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,9 +19,7 @@ import com.github.dockerjava.api.command.CreateContainerResponse;
 import com.github.dockerjava.api.command.InspectContainerResponse;
 import com.github.dockerjava.api.model.Frame;
 import com.github.dockerjava.api.model.HostConfig;
-import com.squareup.javapoet.CodeBlock;
-import com.squareup.javapoet.MethodSpec;
-import com.squareup.javapoet.TypeSpec;
+import com.github.dockerjava.core.command.LogContainerResultCallback;
 
 @Service
 public class JavaCodeGenerator implements CodeGenerator{
@@ -170,21 +167,21 @@ public class JavaCodeGenerator implements CodeGenerator{
 
 	@Override
 	public String getOutput(String containerId) {
-		
-		StringBuilder output = new StringBuilder();
+		final List<Frame> logs = new ArrayList<>();
 	     dockerClient.logContainerCmd(containerId).withStdOut(true)
 	                                              .withStdErr(true)
+	                                              .withFollowStream(true)
 	                 .exec(new ResultCallback.Adapter<>() {
 	                	 @Override
 	                	 public void onNext(Frame frame)
 	                	 {
-	                		 System.out.println(frame.toString());
-	                		 output.append(frame.toString());
+	                         logs.add(frame);
 	                	 }
 	                 });
 	     
+	     System.out.println("Output" + logs.size());
 	     
-	     return output.toString();
+	     return "done";
 	}
 
 	@Override

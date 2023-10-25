@@ -20,5 +20,6 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer{
 	  public void registerStompEndpoints(StompEndpointRegistry registry) {
 	    registry.addEndpoint("/notification").setAllowedOrigins("http://localhost:3000");
 	  }
+	  
 	
 }
