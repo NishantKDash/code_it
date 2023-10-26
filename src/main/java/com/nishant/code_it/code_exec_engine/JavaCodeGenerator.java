@@ -7,6 +7,7 @@ import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -17,9 +18,11 @@ import com.github.dockerjava.api.async.ResultCallback;
 import com.github.dockerjava.api.command.BuildImageResultCallback;
 import com.github.dockerjava.api.command.CreateContainerResponse;
 import com.github.dockerjava.api.command.InspectContainerResponse;
+import com.github.dockerjava.api.model.BuildResponseItem;
 import com.github.dockerjava.api.model.Frame;
 import com.github.dockerjava.api.model.HostConfig;
 import com.github.dockerjava.core.command.LogContainerResultCallback;
+import com.nishant.code_it.exceptions.CompileFailed;
 
 @Service
 public class JavaCodeGenerator implements CodeGenerator{
@@ -113,7 +116,7 @@ public class JavaCodeGenerator implements CodeGenerator{
 	
 	
 	@Override
-	public String buildImage(String dockerfilePath , String contextPath)
+	public String buildImage(String dockerfilePath , String contextPath) throws Exception
 	{
 		
 	String imageid = dockerClient.buildImageCmd()
@@ -166,8 +169,10 @@ public class JavaCodeGenerator implements CodeGenerator{
 	}
 
 	@Override
-	public String getOutput(String containerId) {
-		final List<Frame> logs = new ArrayList<>();
+	public String getOutput(String containerId) throws InterruptedException {
+		
+		CountDownLatch latch = new CountDownLatch(1);
+		StringBuilder output = new StringBuilder();
 	     dockerClient.logContainerCmd(containerId).withStdOut(true)
 	                                              .withStdErr(true)
 	                                              .withFollowStream(true)
@@ -175,11 +180,24 @@ public class JavaCodeGenerator implements CodeGenerator{
 	                	 @Override
 	                	 public void onNext(Frame frame)
 	                	 {
-	                         logs.add(frame);
+	                         output.append(frame.toString());
 	                	 }
+	                	 
+	                	 @Override
+	                	 public void onComplete()
+	                	 {
+	                		 latch.countDown();
+	                	 }
+	                	 
+	                	   @Override
+	                       public void onError(Throwable throwable) {
+	                           System.err.println("Error during log retrieval: " + throwable.getMessage());
+	                           latch.countDown(); // Signal completion even in case of error
+	                       }
+	                	 
 	                 });
 	     
-	     System.out.println("Output" + logs.size());
+	     latch.await();
 	     
 	     return "done";
 	}

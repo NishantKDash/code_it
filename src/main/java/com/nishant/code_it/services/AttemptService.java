@@ -1,6 +1,7 @@
 package com.nishant.code_it.services;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -74,5 +75,12 @@ public class AttemptService {
 		template.convertAndSend(exchangeName , attemptQueueKey , queueData);
 		
 		return savedAttempt;
+	}
+	
+	public List<Attempt> getAttempts(String username)
+	{
+		 UserEntity user = userRepository.findByusername(username);
+		 List<Attempt> attempts = attemptRepository.getAttemptsByUser(user);
+		 return attempts;
 	}
 }

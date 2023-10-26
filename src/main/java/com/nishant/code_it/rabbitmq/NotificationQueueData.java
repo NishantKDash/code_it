@@ -1,7 +1,5 @@
 package com.nishant.code_it.rabbitmq;
 
-import java.util.List;
-
 import com.nishant.code_it.enums.AttemptStatus;
 
 import lombok.AllArgsConstructor;
@@ -18,6 +16,6 @@ public class NotificationQueueData {
 	private Long qid;
 	private Long attemptId;
 	private AttemptStatus attemptStatus;
-	private List<String> results;
+	private String message;
 	private String username;
 }

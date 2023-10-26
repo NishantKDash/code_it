@@ -10,11 +10,11 @@ public interface CodeGenerator {
 	public String createCodeFile(String folderPath , String code);
 	public void deleteFile(String path) throws Exception;
 	public String createDockerfile(String folderPath , Long attemptId , Long testCaseId);
-	public String buildImage(String dockerfilePath , String contextPath);
+	public String buildImage(String dockerfilePath , String contextPath) throws Exception;
 	public void removeImage(String imageId);
 	public String createContainer(String imageName);
 	public void startContainer(String containerId);
 	public void stopContainer(String containerId);
 	public void removeContainer(String containerId);
-	public String getOutput(String containerId) throws IOException;
+	public String getOutput(String containerId) throws IOException, InterruptedException;
 }

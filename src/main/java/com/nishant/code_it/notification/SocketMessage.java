@@ -13,4 +13,5 @@ public class SocketMessage {
    private Long qid;
    private Long attemptId;
    private String result;
+   private String message;
 }
