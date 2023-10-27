@@ -25,5 +25,6 @@ public class NotificationQueueListener {
 		
 		String destination = "/topic/" + notificationData.getUsername();
 		messagingTemplate.convertAndSend(destination, message);
+		
 	}
 }

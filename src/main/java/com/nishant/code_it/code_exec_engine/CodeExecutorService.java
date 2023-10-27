@@ -91,7 +91,6 @@ public class CodeExecutorService {
 		}
 		
 		try {
-			System.out.println("WrongImage" +  imageId);
 			containerId = codeGenerator.createContainer(imageId);
 		}
 		catch(Exception e)
@@ -175,6 +174,21 @@ public class CodeExecutorService {
 	
 	public boolean examineOutput(List<String> expectedOutput , List<String> output)
 	{
+	
+		for(int i = 0;i<expectedOutput.size();i++)
+		{
+			System.out.println("OUTPUT:" + output.get(i));
+			String e = expectedOutput.get(i);
+			String o = output.get(i);
+			
+			if(o == "")
+				return false;
+			
+			o = o.substring(8);
+			if(!o.equals(e))
+				return false;
+				
+		}
 		return true;
 	}
 	

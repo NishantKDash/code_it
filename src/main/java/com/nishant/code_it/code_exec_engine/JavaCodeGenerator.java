@@ -171,8 +171,8 @@ public class JavaCodeGenerator implements CodeGenerator{
 	@Override
 	public String getOutput(String containerId) throws InterruptedException {
 		
-		CountDownLatch latch = new CountDownLatch(1);
 		StringBuilder output = new StringBuilder();
+		  CountDownLatch latch = new CountDownLatch(1); 
 	     dockerClient.logContainerCmd(containerId).withStdOut(true)
 	                                              .withStdErr(true)
 	                                              .withFollowStream(true)
@@ -183,23 +183,20 @@ public class JavaCodeGenerator implements CodeGenerator{
 	                         output.append(frame.toString());
 	                	 }
 	                	 
-	                	 @Override
-	                	 public void onComplete()
-	                	 {
-	                		 latch.countDown();
-	                	 }
-	                	 
+	                	   @Override
+	                       public void onComplete() {
+	                           latch.countDown(); // Signal that the exec is complete
+	                       }
+	                	   
 	                	   @Override
 	                       public void onError(Throwable throwable) {
-	                           System.err.println("Error during log retrieval: " + throwable.getMessage());
-	                           latch.countDown(); // Signal completion even in case of error
+	                           latch.countDown(); // Signal that an error occurred
+	                           // Handle the error if needed
 	                       }
 	                	 
 	                 });
-	     
 	     latch.await();
-	     
-	     return "done";
+	     return output.toString();
 	}
 
 	@Override
